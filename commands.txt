@@ -1,0 +1,7 @@
+x 10
+y   20
+
+y 3
+ x 4
+# Checkwater level
+sleep 4
