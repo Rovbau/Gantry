@@ -12,7 +12,7 @@ pprint.pp(parser.commands)
 for code in parser.commands:
     if code["move_code"] == "X":
         stepper_x.goto_pos(int(code["value"]))
-    elif code["move_code"] == "Y":
+    elif code["move_code"] == "Z":
         stepper_y.goto_pos(int(code["value"]))
     elif code["move_code"] == "SLEEP":
         print("Sleep %s" % (int(code["value"])))
