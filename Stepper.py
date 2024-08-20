@@ -5,6 +5,8 @@ except:
     import FakeGPIO as GPIO
     GPIO.VERBOSE = False
 from time import sleep
+from threading import *
+
 GPIO.setwarnings(False)
 
 class Stepper():
@@ -15,6 +17,7 @@ class Stepper():
         self.pin_dir = pin_dir
         self.pin_step = pin_step
         self.actual_steps = int(actual)
+        self.stopp = False
         
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(pin_dir,GPIO.OUT)
@@ -29,18 +32,26 @@ class Stepper():
     def set_actual_steps(self, actual_steps):
         """Set the actual Motor Position"""
         self.actual_steps = actual_steps
+
+    def stop(self):
+        self.stopp = True
         
     def goto_pos(self, lenght):
         """Set Motor to desired position. Input: lentht[mm]"""
         steps = int(lenght / self.mm_per_step)
         print(str(self.name) + " steps: " +str(steps) + "  mm " +str(lenght))
         while steps != self.actual_steps:
+            if self.stopp == True:
+                self.stopp = False
+                return
+            
             if steps >= self.actual_steps:
                 self.do_step(1)
                 self.actual_steps += 1
             else:
                 self.do_step(-1)
                 self.actual_steps -= 1
+        print("End moving")
             
     def do_step(self, steps, speed = 0.002):
         """Do Motor Steps. +steps or -steps changes direction)"""

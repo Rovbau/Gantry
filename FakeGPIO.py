@@ -232,5 +232,3 @@ def remove_event_detect(*args, **kwargs):
 @log
 def setwarnings(*args, **kwargs):
     pass
-
-
