@@ -11,13 +11,14 @@ GPIO.setwarnings(False)
 
 class Stepper():
     """Controls a Stepper Motor with the Modul A4988"""
-    def __init__(self, name, mm_per_step, pin_dir, pin_step, actual):
+    def __init__(self, name, mm_per_step, pin_dir, pin_step, polarity, actual):
         self.name = name
         self.mm_per_step = mm_per_step
         self.pin_dir = pin_dir
         self.pin_step = pin_step
         self.actual_steps = int(actual)
-        self.stopp = False
+        self.stop = False
+        self.polarity = polarity
         
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(pin_dir,GPIO.OUT)
@@ -33,16 +34,31 @@ class Stepper():
         """Set the actual Motor Position"""
         self.actual_steps = actual_steps
 
-    def stop(self):
-        self.stopp = True
-        
+    def stopping(self):
+        print("Stepper gets Stop command")
+        self.stop = True
+
+    def pause(self, sleep_time):
+        for i in range(sleep_time): 
+            if self.stop == True:
+                return
+            sleep(1)
+               
     def goto_pos(self, lenght):
         """Set Motor to desired position. Input: lentht[mm]"""
+        self.stop = False
+
+        if self.polarity == "reversed":
+            lenght = lenght * (-1)
+        elif self.polarity == "normal":
+            pass
+        else:
+            print("Motor direction wrong, nust be 'normal' or 'reversed'")
+    
         steps = int(lenght / self.mm_per_step)
-        print(str(self.name) + " steps: " +str(steps) + "  mm " +str(lenght))
+        print(str(self.name) + " for " + str(lenght) + "  mm")
         while steps != self.actual_steps:
-            if self.stopp == True:
-                self.stopp = False
+            if self.stop == True:
                 return
             
             if steps >= self.actual_steps:
@@ -52,7 +68,7 @@ class Stepper():
                 self.do_step(-1)
                 self.actual_steps -= 1
         print("End moving")
-            
+          
     def do_step(self, steps, speed = 0.002):
         """Do Motor Steps. +steps or -steps changes direction)"""
         if steps > 0:
@@ -70,8 +86,8 @@ class Stepper():
 
 if __name__ == "__main__":
     
-    stepper1 = Stepper("Z-axis", mm_per_step = 0.05, pin_dir = 35, pin_step = 31, actual=0)
-    stepper2 = Stepper("X-axis", mm_per_step = 0.22, pin_dir = 37, pin_step = 33, actual=0)
+    stepper1 = Stepper("Z-axis", mm_per_step = 0.05, pin_dir = 35, pin_step = 31, polarity = "normal", actual=0)
+    stepper2 = Stepper("X-axis", mm_per_step = 0.22, pin_dir = 37, pin_step = 33, polarity = "reversed", actual=0)
     for i in range(5):
         stepper1.goto_pos(-200)
         sleep(3)

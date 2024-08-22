@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from threading import *
 import atexit
 from time import sleep, time, strftime
+import Limits
 
 class Gui():
     def __init__(self, root):
@@ -121,8 +122,8 @@ class Gui():
         self.button_abbrechen.place          (x= 380, y = space*13)
 
         #Init motors
-        #self.stepper_Y = Stepper("Z-axis", mm_per_step = 0.05, pin_dir = 35, pin_step = 31, actual=0)
-        self.stepper_X = Stepper("X-axis", mm_per_step = 0.22, pin_dir = 37, pin_step = 33, actual=0)
+        self.stepper_Z = Stepper("Z-axis", mm_per_step = 0.05, pin_dir = 35, pin_step = 31, polarity="reversed", actual=0)
+        self.stepper_X = Stepper("X-axis", mm_per_step = 0.22, pin_dir = 37, pin_step = 33, polarity="reversed", actual=0)
 
 
     def behaelter_anzahl_changed(self, var, index, mode):
@@ -187,22 +188,49 @@ class Gui():
             self.radiobutton_enlager_5.config(state="normal")
             self.radiobutton_enlager_5.select()
 
+    def move(self, commands):  
+
+        for command in commands:
+            if self.stop_test == True:
+                return
+            print(command)
+            if command[0] == "X":
+                self.stepper_X.goto_pos(command[1])
+            elif command[0] == "Z":
+                self.stepper_Z.goto_pos(command[1])
+            elif command[0] == "Sleep":
+                self.stepper_X.pause(command[1])
+
+         
+
     def start_test(self):
-        print("Start")      
-        ARM_LENGHT = 1000       # The free distanze to move at X-axis 
-        x_move = ARM_LENGHT
+        print("Start")
+        commands = []
+        self.stop_test = False  
+        arm_lenght = Limits.ARM_LEFT_RIGHT_MAX  # The free distanze to move at X-axis 
+        arm_down = Limits.ARM_UP_DOWN_MAX
         anzahl_behaelter = int(self.var_anzahl_beh.get())
         if anzahl_behaelter > 1:
-            x_move = ARM_LENGHT / (anzahl_behaelter - 1)
+            x_move = arm_lenght / (anzahl_behaelter - 1)
+        else:
+            x_move = arm_lenght
 
-        t1 = Thread(target=self.stepper_X.goto_pos, args=(300,))
+        single_command = [["Z",arm_down], ["Sleep",10], ["Z",0], ["X", x_move]]
+
+        for behaelter in range(anzahl_behaelter):
+            commands.extend(single_command)
+
+        print(commands)
+
+        t1 = Thread(target=self.move, args=(commands,))
         t1.start()
-
-
+        
     def stop_test(self):
-        self.stepper_X.stop()
         print("Stop")
-    
+        self.stop_test = True 
+        self.stepper_X.stopping()
+        self.stepper_Z.stopping()
+
     def pause_test(self):
         print("Pause")  
 
