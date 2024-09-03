@@ -56,8 +56,9 @@ class Stepper():
             print("Motor direction wrong, nust be 'normal' or 'reversed'")
     
         steps = int(lenght / self.mm_per_step)
-        print(str(self.name) + " for " + str(lenght) + "  mm")
+        print(str(self.name) + " " + str(lenght) + " mm")
         while steps != self.actual_steps:
+            print(str(self.name) + " " + str(self.actual_steps))
             if self.stop == True:
                 return
             
@@ -67,7 +68,7 @@ class Stepper():
             else:
                 self.do_step(-1)
                 self.actual_steps -= 1
-        print("End moving")
+        print(self.name + " stopped")
           
     def do_step(self, steps, speed = 0.002):
         """Do Motor Steps. +steps or -steps changes direction)"""
@@ -83,6 +84,7 @@ class Stepper():
             sleep(speed / 2)
             GPIO.output(self.pin_step, False)
             sleep(speed / 2)
+
 
 if __name__ == "__main__":
     

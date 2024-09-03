@@ -12,6 +12,7 @@ from threading import *
 import atexit
 from time import sleep, time, strftime
 import Limits
+from pprint import pprint
 
 class Gui():
     def __init__(self, root):
@@ -26,8 +27,7 @@ class Gui():
         standart_font = font.nametofont("TkDefaultFont")
         standart_font.configure(size=9, family="Segoe UI")
         root.option_add("*Font", standart_font)
-        #Scrollbar
-        self.scrollbar = Scrollbar(root)
+  
 
         #*************************  Left  ******************************
         self.label_anzahl_beh =         Label(root, text="Anzahl Behälter")
@@ -44,35 +44,40 @@ class Gui():
         self.var_anzahl_beh = StringVar(root) 
         self.var_anzahl_beh.set(5)
         self.var_anzahl_beh.trace_add('write', self.behaelter_anzahl_changed)
-        options = [1,2,3,4,5] 
+        options = [2,3,4,5] 
         self.option_anzahl_beh = OptionMenu(root, self.var_anzahl_beh, *options) 
         #Entries
         self.var_wiederholung = StringVar()
         self.entry_wiederholung =       Entry(root, width = 10, textvariable = self.var_wiederholung)
-        self.entry_wiederholung.insert(0, "200")
+        self.entry_wiederholung.insert(0, "2")
 
         self.var_eintauchzeit1 = StringVar()
         self.entry_eintauchzeit1 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit1)
-        self.entry_eintauchzeit1.insert(0, "55") 
-        self.var_eintauchzeit1 = StringVar()
-        self.entry_eintauchzeit2 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit1)
-        self.entry_eintauchzeit2.insert(0, "55") 
-        self.var_eintauchzeit1 = StringVar()
-        self.entry_eintauchzeit3 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit1)
-        self.entry_eintauchzeit3.insert(0, "55") 
-        self.var_eintauchzeit1 = StringVar()
-        self.entry_eintauchzeit4 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit1)
-        self.entry_eintauchzeit4.insert(0, "55") 
-        self.var_eintauchzeit1 = StringVar()
-        self.entry_eintauchzeit5 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit1)
-        self.entry_eintauchzeit5.insert(0, "55") 
+        self.entry_eintauchzeit1.insert(0, "11") 
+        self.var_eintauchzeit2 = StringVar()
+        self.entry_eintauchzeit2 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit2)
+        self.entry_eintauchzeit2.insert(0, "22") 
+        self.var_eintauchzeit3 = StringVar()
+        self.entry_eintauchzeit3 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit3)
+        self.entry_eintauchzeit3.insert(0, "33") 
+        self.var_eintauchzeit4 = StringVar()
+        self.entry_eintauchzeit4 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit4)
+        self.entry_eintauchzeit4.insert(0, "44") 
+        self.var_eintauchzeit5 = StringVar()
+        self.entry_eintauchzeit5 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit5)
+        self.entry_eintauchzeit5.insert(0, "55")
+        self.entry_array =  (self.var_eintauchzeit1,
+                             self.var_eintauchzeit2,
+                             self.var_eintauchzeit3,
+                             self.var_eintauchzeit4,
+                             self.var_eintauchzeit5)
         #Radiobutton
-        self.var_testende = StringVar(value="STORAGE 5")         #Initial Value for radiobuttons
-        self.radiobutton_enlager_1 =   Radiobutton(root, text="", variable = self.var_testende, value="STORAGE 1")
-        self.radiobutton_enlager_2 =   Radiobutton(root, text="", variable = self.var_testende, value="STORAGE 2")
-        self.radiobutton_enlager_3 =   Radiobutton(root, text="", variable = self.var_testende, value="STORAGE 3")
-        self.radiobutton_enlager_4 =   Radiobutton(root, text="", variable = self.var_testende, value="STORAGE 4")
-        self.radiobutton_enlager_5 =   Radiobutton(root, text="", variable = self.var_testende, value="STORAGE 5")
+        self.var_testende = StringVar(value="5")         #Initial Value for radiobuttons
+        self.radiobutton_enlager_1 =   Radiobutton(root, text="", variable = self.var_testende, value="1")
+        self.radiobutton_enlager_2 =   Radiobutton(root, text="", variable = self.var_testende, value="2")
+        self.radiobutton_enlager_3 =   Radiobutton(root, text="", variable = self.var_testende, value="3")
+        self.radiobutton_enlager_4 =   Radiobutton(root, text="", variable = self.var_testende, value="4")
+        self.radiobutton_enlager_5 =   Radiobutton(root, text="", variable = self.var_testende, value="5")
         #Units
         self.label_einheit_1 =         Label(root, text="Sekunden")
         self.label_einheit_2 =         Label(root, text="Sekunden")   
@@ -81,8 +86,9 @@ class Gui():
         self.label_einheit_5 =         Label(root, text="Sekunden")
         #Buttons
         self.button_start =            Button(root, text="Start", fg="green", command=self.start_test, width = 20)
-        self.button_pause =            Button(root, text="Pause", fg="orange" ,command=self.pause_test, width = 20)
+        #self.button_pause =            Button(root, text="Pause", fg="orange" ,command=self.pause_test, width = 20)
         self.button_abbrechen =        Button(root, text="Abbrechen", fg="red" ,command=self.stop_test, width = 20)
+        self.button_status =           Button(root, text="> Test <", width = 20, height= 4)
 
         #***  Place label Left  ***
         space = 40
@@ -117,8 +123,9 @@ class Gui():
         self.label_einheit_4.place           (x= 220, y = space*8)
         self.label_einheit_5.place           (x= 220, y = space*9)
         #Buttons
-        self.button_start.place              (x= 10, y = space*13) 
-        self.button_pause.place              (x= 200, y = space*13)
+        self.button_status.place             (x= 380,  y = space*1)
+        self.button_start.place              (x= 10,  y = space*13) 
+        #self.button_pause.place              (x= 200, y = space*13)
         self.button_abbrechen.place          (x= 380, y = space*13)
 
         #Init motors
@@ -189,55 +196,87 @@ class Gui():
             self.radiobutton_enlager_5.select()
 
     def move(self, commands):  
-
         for command in commands:
-            if self.stop_test == True:
+            if self.stop_testing == True:
                 return
-            print(command)
             if command[0] == "X":
                 self.stepper_X.goto_pos(command[1])
             elif command[0] == "Z":
                 self.stepper_Z.goto_pos(command[1])
             elif command[0] == "Sleep":
                 self.stepper_X.pause(command[1])
+       
+    def flash(self):
+        if self.button_status.cget("bg") == "SystemButtonFace":
+            self.button_status.config(bg = 'gold')
+        else:
+            self.button_status.config(bg = 'SystemButtonFace')
+        self.button_blinking = root.after(700, self.flash)
 
-         
 
     def start_test(self):
         print("Start")
         commands = []
-        self.stop_test = False  
+        self.flash()
+        self.button_start.configure(state=DISABLED)
+        self.stop_testing = False  
+
         arm_lenght = Limits.ARM_LEFT_RIGHT_MAX  # The free distanze to move at X-axis 
-        arm_down = Limits.ARM_UP_DOWN_MAX
+        arm_down =   Limits.ARM_UP_DOWN_MAX
         anzahl_behaelter = int(self.var_anzahl_beh.get())
-        if anzahl_behaelter > 1:
-            x_move = arm_lenght / (anzahl_behaelter - 1)
-        else:
-            x_move = arm_lenght
+        x_move = arm_lenght / (anzahl_behaelter - 1)
 
-        single_command = [["Z",arm_down], ["Sleep",10], ["Z",0], ["X", x_move]]
-
+        #Commands for one run
         for behaelter in range(anzahl_behaelter):
+            immerse_time = int(self.entry_array[behaelter].get())
+            single_command = [["X", x_move*behaelter],["Sleep", 3], ["Z", arm_down], ["Sleep", immerse_time], ["Z", 0], ["Sleep", 3]]
             commands.extend(single_command)
 
-        print(commands)
+        #Multiply runs
+        commands = commands * int(self.var_wiederholung.get())
+
+        #Add commands for storage position at testend
+        store_nr = int(self.var_testende.get())
+        position = store_nr - 1
+        commands.extend([["X", x_move*position],["Sleep",3], ["Z",arm_down]])
+
+        #OPTION if storage in air is needed
+        #commands.extend([["Z", 0], ["Sleep", 3], ["X", 0]])
+        
+        pprint(commands)
 
         t1 = Thread(target=self.move, args=(commands,))
+        t1.daemon = True
         t1.start()
         
     def stop_test(self):
         print("Stop")
-        self.stop_test = True 
+        self.stop_testing = True 
         self.stepper_X.stopping()
         self.stepper_Z.stopping()
+        sleep(2)
 
-    def pause_test(self):
-        print("Pause")  
+        print(str(self.stepper_X.get_actual_steps()) + "STEPS")
+        self.stepper_Z.goto_pos(0)
+        self.stepper_X.pause(3)
+        self.stepper_X.goto_pos(0)
+        self.button_start.configure(state=NORMAL)
+        root.after_cancel(self.button_blinking)
+
+    def cleanup(self):
+        """End APP"""
+        print("Close GUI")
+        finish = messagebox.askquestion("Abbruch", "Bitte nur beenden wenn Arm auf Null-Position steht " +"\n" +"\n"
+                               + "Jetz zum Nullpunkt und Beenden ?")
+        if finish == "yes":
+            self.stop_test()
+            self.root.destroy()
+
 
 if __name__ == "__main__":
 
     root=Tk()
     gui = Gui(root)
-
+    root.protocol('WM_DELETE_WINDOW',gui.cleanup)
     root.mainloop()
 
