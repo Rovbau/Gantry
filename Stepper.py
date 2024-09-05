@@ -58,7 +58,7 @@ class Stepper():
         steps = int(lenght / self.mm_per_step)
         print(str(self.name) + " " + str(lenght) + " mm")
         while steps != self.actual_steps:
-            print(str(self.name) + " " + str(self.actual_steps))
+            #print(str(self.name) + " " + str(self.actual_steps))
             if self.stop == True:
                 return
             

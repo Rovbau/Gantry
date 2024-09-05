@@ -88,7 +88,8 @@ class Gui():
         self.button_start =            Button(root, text="Start", fg="green", command=self.start_test, width = 20)
         #self.button_pause =            Button(root, text="Pause", fg="orange" ,command=self.pause_test, width = 20)
         self.button_abbrechen =        Button(root, text="Abbrechen", fg="red" ,command=self.stop_test, width = 20)
-        self.button_status =           Button(root, text="> Test <", width = 20, height= 4)
+        self.button_status =           Button(root, text="> Test <", 
+            bg = "gray85", relief = GROOVE, borderwidth = 4, width = 20, height= 4)
 
         #***  Place label Left  ***
         space = 40
@@ -129,7 +130,7 @@ class Gui():
         self.button_abbrechen.place          (x= 380, y = space*13)
 
         #Init motors
-        self.stepper_Z = Stepper("Z-axis", mm_per_step = 0.05, pin_dir = 35, pin_step = 31, polarity="reversed", actual=0)
+        self.stepper_Z = Stepper("Z-axis", mm_per_step = 0.05, pin_dir = 35, pin_step = 31, polarity="normal", actual=0)
         self.stepper_X = Stepper("X-axis", mm_per_step = 0.22, pin_dir = 37, pin_step = 33, polarity="reversed", actual=0)
 
 
@@ -207,10 +208,10 @@ class Gui():
                 self.stepper_X.pause(command[1])
        
     def flash(self):
-        if self.button_status.cget("bg") == "SystemButtonFace":
-            self.button_status.config(bg = 'gold')
+        if self.button_status.cget("bg") == "gray85":
+            self.button_status.config(bg = 'blue')
         else:
-            self.button_status.config(bg = 'SystemButtonFace')
+            self.button_status.config(bg = 'gray85')
         self.button_blinking = root.after(700, self.flash)
 
 
@@ -261,7 +262,10 @@ class Gui():
         self.stepper_X.pause(3)
         self.stepper_X.goto_pos(0)
         self.button_start.configure(state=NORMAL)
-        root.after_cancel(self.button_blinking)
+        try:
+            root.after_cancel(self.button_blinking)
+        except AttributeError:
+            print("Closing with Error in self.button_blinking")
 
     def cleanup(self):
         """End APP"""
