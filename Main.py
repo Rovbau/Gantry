@@ -61,35 +61,35 @@ class Gui():
         self.var_eintauchzeit1 = StringVar()
         self.entry_eintauchzeit1 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit1, validate="key")
         self.entry_eintauchzeit1.configure(validatecommand = (self.entry_eintauchzeit1.register(self.test_user_input),'%P','%d'))
-        self.entry_eintauchzeit1.insert(0, "1") 
+        self.entry_eintauchzeit1.insert(0, "11") 
         self.var_eintauchzeit2 = StringVar()
         self.entry_eintauchzeit2 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit2, validate="key")
         self.entry_eintauchzeit2.configure(validatecommand = (self.entry_eintauchzeit2.register(self.test_user_input),'%P','%d'))
-        self.entry_eintauchzeit2.insert(0, "2") 
+        self.entry_eintauchzeit2.insert(0, "12") 
         self.var_eintauchzeit3 = StringVar()
         self.entry_eintauchzeit3 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit3, validate="key")
         self.entry_eintauchzeit3.configure(validatecommand = (self.entry_eintauchzeit3.register(self.test_user_input),'%P','%d'))
-        self.entry_eintauchzeit3.insert(0, "3") 
+        self.entry_eintauchzeit3.insert(0, "13") 
         self.var_eintauchzeit4 = StringVar()
         self.entry_eintauchzeit4 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit4, validate="key")
         self.entry_eintauchzeit4.configure(validatecommand = (self.entry_eintauchzeit4.register(self.test_user_input),'%P','%d'))
-        self.entry_eintauchzeit4.insert(0, "4") 
+        self.entry_eintauchzeit4.insert(0, "14") 
         self.var_eintauchzeit5 = StringVar()
         self.entry_eintauchzeit5 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit5, validate="key")
         self.entry_eintauchzeit5.configure(validatecommand = (self.entry_eintauchzeit5.register(self.test_user_input),'%P','%d'))
-        self.entry_eintauchzeit5.insert(0, "5")
+        self.entry_eintauchzeit5.insert(0, "15")
         self.var_eintauchzeit6 = StringVar()
         self.entry_eintauchzeit6 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit6, validate="key")
         self.entry_eintauchzeit6.configure(validatecommand = (self.entry_eintauchzeit6.register(self.test_user_input),'%P','%d'))
-        self.entry_eintauchzeit6.insert(0, "6")
+        self.entry_eintauchzeit6.insert(0, "16")
         self.var_eintauchzeit7 = StringVar()
         self.entry_eintauchzeit7 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit7, validate="key")
         self.entry_eintauchzeit7.configure(validatecommand = (self.entry_eintauchzeit7.register(self.test_user_input),'%P','%d'))
-        self.entry_eintauchzeit7.insert(0, "7")
+        self.entry_eintauchzeit7.insert(0, "17")
         self.var_eintauchzeit8 = StringVar()
         self.entry_eintauchzeit8 =       Entry(root, width = 10, textvariable = self.var_eintauchzeit8, validate="key")
         self.entry_eintauchzeit8.configure(validatecommand = (self.entry_eintauchzeit8.register(self.test_user_input),'%P','%d'))
-        self.entry_eintauchzeit8.insert(0, "8")
+        self.entry_eintauchzeit8.insert(0, "18")
 
         self.entry_array =  (self.var_eintauchzeit1,
                              self.var_eintauchzeit2,
@@ -351,7 +351,7 @@ class Gui():
         #Commands for one run
         for behaelter in range(anzahl_behaelter):
             immerse_time = int(self.entry_array[behaelter].get())
-            single_command = [["X", x_move*behaelter],["Sleep", 3], ["Z", arm_down], ["Sleep", immerse_time], ["Z", 0], ["Sleep", 3]]
+            single_command = [["X", x_move*behaelter],["Sleep", 5], ["Z", arm_down], ["Sleep", immerse_time],["Sleep", 3], ["Z", 0], ["Sleep", 5]]
             commands.extend(single_command)
 
         #Cycel counter
@@ -363,7 +363,7 @@ class Gui():
         #Add commands for storage position at testend
         store_nr = int(self.var_testende.get())
         position = store_nr - 1
-        commands.extend([["X", x_move*position],["Sleep",3], ["Z",arm_down]])
+        commands.extend([["X", x_move*position],["Sleep",8], ["Z",arm_down]])
 
         #OPTION if storage in air is needed
         #commands.extend([["Z", 0], ["Sleep", 3], ["X", 0]])
@@ -385,7 +385,7 @@ class Gui():
 
         print(str(self.stepper_X.get_actual_steps()) + "STEPS")
         self.stepper_Z.goto_pos(0)
-        self.stepper_X.pause(5)
+        self.stepper_X.pause(8)
         self.stepper_X.goto_pos(0)
         self.button_start.configure(state=NORMAL)
         try:
